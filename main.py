@@ -1,7 +1,7 @@
 import signals
 import plotter
-import modulation
-import demodulation
+import ammodulation
+import amdemodulation
 import channel
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,7 +21,7 @@ def main():
                             "5. PWM Wave\n" \
                             "6. DC Wave\n"  \
                             "7. Exit\n\n" \
-                            "Choice:" ))
+                            "Choice: " ))
             
             if choice < 1 or choice> 7:
                 print("Please enter a choice between 1 and 7.")
@@ -30,7 +30,7 @@ def main():
             if choice == 7:
                 break
 
-            duration = int(input("Please enter the duration: "))
+            duration = float(input("Please enter the duration: "))
             rate = int(input("Please enter the sampling rate: "))
             time = signals.generate_time(duration, rate)
 
@@ -75,17 +75,21 @@ def main():
                 try:
                     choice = int(input("Select the modulation type:\n" \
                                     "1. AM \n" \
-                                    "2. Back\n" ))
+                                    "2. FM \n" \
+                                    "3. Back\n" ))
                     
-                    if choice < 1 or choice> 2:
-                        print("Please enter a choice between 1 and 2.")
+                    if choice < 1 or choice> 3:
+                        print("Please enter a choice between 1 and 3.")
                         continue
         
-                    if choice == 2:
+                    if choice == 3:
                         break
 
                     if choice == 1:
                         simulator.runAM(signal, time, rate)
+
+                    elif choice == 2:
+                        simulator.runFM(signal, time, rate, frequency)
 
                 except ValueError:
                     print("Invalid input, try again.")

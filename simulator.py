@@ -1,8 +1,10 @@
-import modulation
+import ammodulation
 import plotter
 import channel
-import demodulation
+import amdemodulation
 import analysis
+import fmmodulation
+import fmdemodulation
 
 def runAM(message, time, fs):
     while True:
@@ -16,7 +18,7 @@ def runAM(message, time, fs):
                 print("Invalid input, try again.")
                 continue
 
-            amsignal = modulation.am_mod(message, carrier_amplitude, modulation_index, carrier_frequency, time)
+            amsignal = ammodulation.am_mod(message, carrier_amplitude, modulation_index, carrier_frequency, time)
             plotter.plot_signal(time,amsignal, "Modulated Signal")
             break
 
@@ -36,7 +38,7 @@ def runAM(message, time, fs):
                 noise = transmitted[1]
                 plotter.plot_signal(time,amsignal, "Transmitted Signal")
 
-                demodulated = demodulation.am_demod(transmitteds, fs, cutoff, carrier_amplitude, modulation_index)
+                demodulated = amdemodulation.am_demod(transmitteds, fs, cutoff, carrier_amplitude, modulation_index)
                 plotter.plot_signal(time, demodulated, "Demodulated Signal")
                 break
 
@@ -98,6 +100,44 @@ def analyse(demodulated, amsignal, transmitteds, message, time, noise, fs):
              analysis.compare(time, message, demodulated)
       
 
+
+def runFM(message, time, fs, message_freq):
+    while True:
+            plotter.plot_signal(time,message, "Message Signal")
+            try:
+                frequency_dev = int(input("Please enter the frequency deviation: "))
+                carrier_frequency = int(input("Please enter the carrier frequency: "))
+                # modulation_index = float(input("Please enter the modulation index: "))
+
+            except ValueError:
+                print("Invalid input, try again.")
+                continue
+
+            fmsignal = fmmodulation.fm_mod(message, time, carrier_frequency, frequency_dev)
+            plotter.plot_signal(time,fmsignal, "Modulated Signal")
+            break
+
+    while True:
+                try:
+                    fading_frequency = int(input("Please enter the fading frequency: "))
+                    delayt = float(input("Please enter the delay time: "))
+                    stdev = float(input("Please enter the standard deviation of noise: "))
+    
+                except ValueError:
+                    print("Invalid input, try again.")
+                    continue
+    
+                transmitted = channel.transmit(fmsignal, time, fading_frequency, delayt, stdev)
+                transmitteds = transmitted[0]
+                noise = transmitted[1]
+                plotter.plot_signal(time,fmsignal, "Transmitted Signal")
+
+                demodulated = fmdemodulation.fm_demod(fmsignal, fs, frequency_dev, carrier_frequency, message_freq)
+                plotter.plot_signal(time, demodulated, "Demodulated Signal")
+                break
+
+
+    analyse(demodulated, fmsignal, transmitteds, message, time, noise, fs)
 
 
 
