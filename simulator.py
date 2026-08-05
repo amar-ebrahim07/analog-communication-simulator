@@ -43,10 +43,10 @@ def runAM(message, time, fs):
                 break
 
 
-    analyse(demodulated, amsignal, transmitteds, message, time, noise, fs)
+    analyse(demodulated, amsignal, transmitteds, message, time, noise, fs, carrier_frequency)
 
 
-def analyse(demodulated, amsignal, transmitteds, message, time, noise, fs):
+def analyse(demodulated, signal, transmitteds, message, time, noise, fs, cfreq):
 
     while True:
         try:
@@ -93,8 +93,8 @@ def analyse(demodulated, amsignal, transmitteds, message, time, noise, fs):
              print(analysis.gain(message, demodulated))
 
         elif choice == 7:
-             fftset = analysis.spectrum(demodulated, fs)
-             plotter.plot_signal(fftset[1], fftset[0], "Frequency Spectrum", "Frequencies (Hz), ")
+             fftset = analysis.spectrum(transmitteds, fs)
+             plotter.plot_fft(fftset[1], fftset[0], "Frequency Spectrum", cfreq, "Frequencies (Hz)", " ")
 
         elif choice == 8:
              analysis.compare(time, message, demodulated)
@@ -107,7 +107,6 @@ def runFM(message, time, fs, message_freq):
             try:
                 frequency_dev = int(input("Please enter the frequency deviation: "))
                 carrier_frequency = int(input("Please enter the carrier frequency: "))
-                # modulation_index = float(input("Please enter the modulation index: "))
 
             except ValueError:
                 print("Invalid input, try again.")
@@ -137,7 +136,7 @@ def runFM(message, time, fs, message_freq):
                 break
 
 
-    analyse(demodulated, fmsignal, transmitteds, message, time, noise, fs)
+    analyse(demodulated, fmsignal, transmitteds, message, time, noise, fs, carrier_frequency)
 
 
 
